@@ -67,17 +67,6 @@ def db_answer_1(db_session) -> models.Answer:
     return db_answer
 
 
-@pytest.fixture
-def db_answer_2(db_session) -> models.Answer:
-    db_answer = models.Answer(
-        text='The day after tomorrow is '
-             f'{(dt.datetime.now() + dt.timedelta(days=2)).strftime("%A")}',
-    )
-    db_session.add(db_answer)
-    db_session.commit()
-    return db_answer
-
-
 @pytest.fixture(scope='function')
 def db_question(db_session, db_conversation, db_answer) -> models.Question:
     db_question = models.Question(
@@ -103,11 +92,10 @@ def db_question_1(db_session, db_conversation, db_answer_1) -> models.Question:
 
 
 @pytest.fixture
-def db_question_2(db_session, db_conversation, db_answer_2) -> models.Question:
+def db_question_2(db_session, db_conversation) -> models.Question:
     db_question = models.Question(
         conversation_id=db_conversation.id,
         text='What\'s the day after tomorrow?',
-        answer_id=db_answer_2.id
     )
     db_session.add(db_question)
     db_session.commit()
