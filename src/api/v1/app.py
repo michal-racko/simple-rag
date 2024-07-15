@@ -1,7 +1,7 @@
 import chromadb
 import requests
 from pathlib import Path
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy.orm import Session
 
 from db import SessionLocal, engine, Base
@@ -85,7 +85,7 @@ def _request_rag(query: str) -> str:
     return response.json()['message']['content']
 
 
-@app.post('/conversations/')
+@app.post('/conversations/', status_code=status.HTTP_201_CREATED)
 def view_post_conversation(question: Question,
                            db: Session = Depends(get_db)) -> Conversation:
     conversation = create_conversation(db, question)

@@ -100,3 +100,24 @@ def db_question_2(db_session, db_conversation) -> models.Question:
     db_session.add(db_question)
     db_session.commit()
     return db_question
+
+
+@pytest.fixture
+def user_question() -> str:
+    return 'Can I change my delivery address after placing an order?'
+
+
+@pytest.fixture
+def api_question(user_question) -> schemas.Question:
+    return schemas.Question(
+        text=user_question
+    )
+
+
+@pytest.fixture
+def chatbot_response() -> str:
+    return (
+        'Yes, you can change your delivery address after placing an order. '
+        'Please contact our customer service team as soon as possible '
+        'to update your details.'
+    )

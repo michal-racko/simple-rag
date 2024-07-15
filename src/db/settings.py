@@ -20,7 +20,7 @@ if SIMPLE_RAG_TEST:
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
         connect_args={'check_same_thread': False},
-        poolclass=StaticPool,
+        poolclass=StaticPool
     )
     if engine.driver == 'pysqlite':
         # Add foreign-key constraints for sqlite

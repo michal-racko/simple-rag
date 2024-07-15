@@ -12,22 +12,6 @@ from api.v1.crud import (
 from api.v1.settings import TooManyQuestions
 
 
-@pytest.fixture
-def api_question() -> schemas.Question:
-    return schemas.Question(
-        text='Can I change my delivery address after placing an order?'
-    )
-
-
-@pytest.fixture
-def chatbot_response() -> str:
-    return (
-        'Yes, you can change your delivery address after placing an order. '
-        'Please contact our customer service team as soon as possible '
-        'to update your details.'
-    )
-
-
 def test_create_conversation(db_session, api_question):
     conversation = create_conversation(
         db_session,
