@@ -7,7 +7,7 @@ from api.v1.crud import (
     create_conversation,
     get_conversation,
     update_conversation,
-    create_answer
+    answer_conversation
 )
 from api.v1.settings import TooManyQuestions
 
@@ -123,15 +123,29 @@ def test_update_conversation_too_many_questions(db_session,
         )
 
 
-def test_create_answer(db_session, db_question, chatbot_response):
-    create_answer(db_session, db_question, chatbot_response)
+def test_answer_conversation(db_session,
+                             db_conversation,
+                             db_question,
+                             db_question_1,
+                             db_question_2,
+                             db_answer,
+                             db_answer_1,
+                             chatbot_response):
+    conversation = answer_conversation(
+        db_session,
+        db_conversation.id,
+        chatbot_response
+    )
+    assert conversation.id == db_conversation.id
+    assert len(conversation.questions) == 3
 
-    _db_question = db_session.query(models.Question).filter(
-        models.Question.id == db_question.id
+    questions = db_session.query(models.Question).filter(
+        models.Question.conversation_id == conversation.id
+    ).all()
+    assert len(questions) == 3
+    answer = db_session.query(models.Answer).filter(
+        models.Answer.id == questions[-1].answer_id
     ).first()
-    assert _db_question.answer_id is not None
 
-    _db_answer = db_session.query(models.Answer).filter(
-        models.Answer.id == _db_question.answer_id
-    ).first()
-    assert _db_answer.text == chatbot_response
+    assert answer is not None
+    assert answer.text == chatbot_response

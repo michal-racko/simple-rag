@@ -86,13 +86,17 @@ def update_conversation(db: Session,
     return _get_api_conversation(db, db_conversation.id)
 
 
-def create_answer(db: Session,
-                  db_question: models.Question,
-                  text: str) -> (models.Answer, models.Question):
+def answer_conversation(db: Session,
+                        conversation_id: str,
+                        text: str) -> schemas.Conversation:
     db_answer = models.Answer(text=text)
     db.add(db_answer)
     db.commit()
 
-    db_question.answer_id = db_answer.id  # TODO
+    db_question = db.query(models.Question).filter(
+        models.Question.conversation_id == conversation_id
+    ).order_by(models.Question.created_at.desc()).first()
+    db_question.answer_id = db_answer.id
     db.commit()
-    return db_answer, db_question
+
+    return _get_api_conversation(db, conversation_id)
