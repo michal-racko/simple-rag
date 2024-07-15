@@ -5,6 +5,25 @@ system based on open-source LLM models.
 
 ## Project structure
 
+### src
+
+Contains source code for the application serving the QnA chatbot.
+
+### Tests
+
+Tests use the pytest framework (please refer to https://docs.pytest.org for more
+details). First, make sure to install dev dependencies:
+
+```
+pip install -r requirements-dev.txt
+```
+
+Run rests:
+
+```
+pytest -v tests
+```
+
 ### Analysis
 
 The `analysis` folder keeps track of the research conducted on individual parts
