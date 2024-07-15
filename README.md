@@ -3,6 +3,40 @@
 This project focuses on creation of a simple Retrieval-Augmented Generation
 system based on open-source LLM models.
 
+## Usage
+
+First, make sure to install dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+### development server
+
+Run the following commands to start a development server using an SQLite 
+database file.
+
+```
+export SIMPLE_RAG_TEST=True
+fastapi dev src/api/v1/app.py
+```
+
+Start a new conversation with the chatbot:
+
+```
+curl -X POST http://127.0.0.1:8000/conversations/ \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Do you ship your products worldwide?"}'
+```
+
+Continue in a conversation:
+
+```
+curl -X PUT http://127.0.0.1:8000/conversations/<id: str> \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Can I buy your products in the Czech Republic?"}'
+```
+
 ## Project structure
 
 ### src
@@ -12,11 +46,7 @@ Contains source code for the application serving the QnA chatbot.
 ### Tests
 
 Tests use the pytest framework (please refer to https://docs.pytest.org for more
-details). First, make sure to install dev dependencies:
-
-```
-pip install -r requirements-dev.txt
-```
+details).
 
 Run rests:
 

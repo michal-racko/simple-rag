@@ -44,7 +44,7 @@ chroma_collection = chroma_client.get_collection(
 )
 
 
-def _request_rag(query: str) -> str:
+def _request_rag(query: str, previous_questions: list[Question] = None) -> str:
     global chroma_collection
 
     response = requests.post(
@@ -66,12 +66,24 @@ def _request_rag(query: str) -> str:
     else:
         prompt = GENERAL_PROMPT_TEMPLATE.format(question=query)
 
+    previous_messages = []
+    if previous_questions:
+        for question in previous_questions:
+            previous_messages.append({
+                'role': 'user',
+                'content': question.text
+            })
+            previous_messages.append({
+                'role': 'assistant',
+                'content': question.answer
+            })
+
     response = requests.post(
         SIMPLE_RAG_LLM_URL,
         json={
             'model': SIMPLE_RAG_LLM_MODEL,
             'stream': False,
-            'messages': [
+            'messages': previous_messages + [
                 {
                     'role': 'user',
                     'content': prompt
@@ -86,16 +98,16 @@ def _request_rag(query: str) -> str:
 
 
 @app.post('/conversations/', status_code=status.HTTP_201_CREATED)
-def view_post_conversation(question: Question,
-                           db: Session = Depends(get_db)) -> Conversation:
+async def view_post_conversation(question: Question,
+                                 db: Session = Depends(get_db)) -> Conversation:
     conversation = create_conversation(db, question)
     rag_response = _request_rag(question.text)
     return answer_conversation(db, conversation.id, rag_response)
 
 
 @app.get('/conversations/{conversation_id}')
-def view_get_conversation(conversation_id: str,
-                          db: Session = Depends(get_db)) -> Conversation:
+async def view_get_conversation(conversation_id: str,
+                                db: Session = Depends(get_db)) -> Conversation:
     conversation = get_conversation(db, conversation_id)
     if not conversation:
         raise HTTPException(status_code=404, detail='Conversation not found')
@@ -103,9 +115,9 @@ def view_get_conversation(conversation_id: str,
 
 
 @app.put('/conversations/{conversation_id}')
-def view_put_conversation(conversation_id: str,
-                          question: Question,
-                          db: Session = Depends(get_db)) -> Conversation:
+async def view_put_conversation(conversation_id: str,
+                                question: Question,
+                                db: Session = Depends(get_db)) -> Conversation:
     try:
         conversation = update_conversation(db, conversation_id, question)
     except TooManyQuestions:
