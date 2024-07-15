@@ -40,6 +40,8 @@ pip install -r requirements-analysis.txt
   and similarity metrics for the retriever
 - `003-general-questions.ipynb`: Estimates the optimal document distance
   threshold for distinguishing between country-specific and general questions
+- `004-prompt-engineering.ipynb`: Manually testing prompts and a PoC of the RAG
+  system
 
 Experimental results are logged in the MLFLow db file. To view the results start
 the MLFlow server and navigate to `localhost:5000`. Experiment are listed in the
