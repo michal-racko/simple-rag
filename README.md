@@ -8,7 +8,7 @@ system based on open-source LLM models.
 ### Analysis
 
 The `analysis` folder keeps track of the research conducted on individual parts
-of the system. `analysis/experiments` contains Jupyther notebooks with
+of the system. `analysis/experiments` contains jupyter notebooks with
 individual experiments. Please use MLFlow to track results of different
 approaches.
 
@@ -46,4 +46,4 @@ pip install -r requirements-analysis.txt
 Experimental results are logged in the MLFLow db file. To view the results start
 the MLFlow server and navigate to `localhost:5000`. Experiment are listed in the
 top-left part of the UI. Experiment naming follows names of the corresponding
-jupyther notebooks.
+jupyter notebooks.
