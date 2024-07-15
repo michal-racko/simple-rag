@@ -21,10 +21,25 @@ class Conversation(Base):
     __tablename__ = 'conversations'
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    started_at = Column(DateTime, default=dt.datetime.utcnow)
+    created_at = Column(DateTime, default=dt.datetime.utcnow)
 
     def __repr__(self) -> str:
-        return f'<Conversation: {self.id}, from: {self.started_at}>'
+        return f'<Conversation: {self.id}, from: {self.created_at}>'
+
+
+class Answer(Base):
+    """
+    Represents chatbot's answer to a given question.
+    """
+
+    __tablename__ = 'answers'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    text = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=dt.datetime.utcnow)
+
+    def __repr__(self) -> str:
+        return f'<Answer: {self.id}, created at: {self.created_at}>'
 
 
 class Question(Base):
@@ -43,28 +58,11 @@ class Question(Base):
         ForeignKey('conversations.id'),
         nullable=False
     )
-
-    def __repr__(self) -> str:
-        return f'<Question: {self.id}, created at: {self.created_at}>'
-
-
-class Answer(Base):
-    """
-    Represents chatbot's answer to a given question.
-    """
-
-    __tablename__ = 'answers'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    text = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=dt.datetime.utcnow)
-
-    question_id = Column(
+    answer_id = Column(
         Integer,
         ForeignKey('questions.id'),
-        nullable=False,
-        unique=True
+        nullable=True
     )
 
     def __repr__(self) -> str:
-        return f'<Answer: {self.id}, created at: {self.created_at}>'
+        return f'<Question: {self.id}, created at: {self.created_at}>'
