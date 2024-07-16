@@ -1,3 +1,4 @@
+import time
 import chromadb
 import requests
 from pathlib import Path
@@ -23,7 +24,14 @@ from .settings import (
 )
 from .templates import NO_SALE_PROMPT_TEMPLATE, GENERAL_PROMPT_TEMPLATE
 
-Base.metadata.create_all(bind=engine)
+for _ in range(10):
+    try:
+        Base.metadata.create_all(bind=engine)
+        break
+    except Exception:
+        time.sleep(1)
+else:
+    raise RuntimeError('Cannot connect to database')
 
 app = FastAPI()
 
@@ -47,13 +55,16 @@ chroma_collection = chroma_client.get_collection(
 def _request_rag(query: str, previous_questions: list[Question] = None) -> str:
     global chroma_collection
 
-    response = requests.post(
-        SIMPLE_RAG_EMBEDDING_URL,
-        json={
-            'model': SIMPLE_RAG_EMBEDDING_MODEL,
-            'prompt': query
-        }
-    )
+    try:
+        response = requests.post(
+            SIMPLE_RAG_EMBEDDING_URL,
+            json={
+                'model': SIMPLE_RAG_EMBEDDING_MODEL,
+                'prompt': query
+            }
+        )
+    except requests.exceptions.ConnectionError:
+        raise HTTPException(status_code=503, detail='embedding model error')
     if response.status_code != 200:
         raise HTTPException(status_code=503, detail='embedding model error')
 
@@ -78,19 +89,22 @@ def _request_rag(query: str, previous_questions: list[Question] = None) -> str:
                 'content': question.answer
             })
 
-    response = requests.post(
-        SIMPLE_RAG_LLM_URL,
-        json={
-            'model': SIMPLE_RAG_LLM_MODEL,
-            'stream': False,
-            'messages': previous_messages + [
-                {
-                    'role': 'user',
-                    'content': prompt
-                }
-            ]
-        }
-    )
+    try:
+        response = requests.post(
+            SIMPLE_RAG_LLM_URL,
+            json={
+                'model': SIMPLE_RAG_LLM_MODEL,
+                'stream': False,
+                'messages': previous_messages + [
+                    {
+                        'role': 'user',
+                        'content': prompt
+                    }
+                ]
+            }
+        )
+    except requests.exceptions.ConnectionError:
+        raise HTTPException(status_code=503, detail='embedding model error')
     if response.status_code != 200:
         raise HTTPException(status_code=503, detail='llm model error')
 

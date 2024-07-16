@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
@@ -10,9 +11,32 @@ SIMPLE_RAG_TEST = (
         in ('true', 't', '1', 'yes', 'y')
 )
 
-postgresql_db = os.environ.get('SIMPLE_RAG_POSTGRESQL_DB')
-postgresql_user = os.environ.get('SIMPLE_RAG_POSTGRESQL_USER')
-postgresql_pswd = os.environ.get('SIMPLE_RAG_POSTGRESQL_PSWD')
+
+def get_secret(secret_file_var: str, default=None) -> str:
+    """
+    Reads the secret file and returns it as a string if it exists
+    otherwise returns the default value.
+    """
+    try:
+        path = Path(os.environ[secret_file_var])
+        if path.is_file():
+            return path.read_text().strip()
+    except KeyError:
+        return default
+
+
+postgresql_db = get_secret(
+    'SIMPLE_RAG_POSTGRESQL_DB_FILE',
+    default=os.environ.get('SIMPLE_RAG_POSTGRESQL_DB')
+)
+postgresql_user = get_secret(
+    'SIMPLE_RAG_POSTGRESQL_USER_FILE',
+    default=os.environ.get('SIMPLE_RAG_POSTGRESQL_USER')
+)
+postgresql_pswd = get_secret(
+    'SIMPLE_RAG_POSTGRESQL_PSWD_FILE',
+    default=os.environ.get('SIMPLE_RAG_POSTGRESQL_PSWD')
+)
 postgresql_host = os.environ.get('SIMPLE_RAG_POSTGRESQL_HOST')
 postgresql_port = os.environ.get('SIMPLE_RAG_POSTGRESQL_PORT')
 

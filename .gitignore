@@ -9,3 +9,5 @@ analysis/data/chroma-db
 dev.db
 
 env.sh
+
+secrets
