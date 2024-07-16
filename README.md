@@ -55,12 +55,68 @@ curl -X POST http://127.0.0.1:8000/conversations/ \
      -d '{"text": "Do you ship your products worldwide?"}'
 ```
 
+response:
+
+```
+{"id":<id: str>,
+ "questions":[{"text":"Do you ship your products worldwide?",
+ "answer":"Yes, we do ship our products worldwide! At Home Accessories LLC, 
+ we strive to make our high-quality home accessories available 
+ to customers globally. We have a robust shipping infrastructure in place,
+ and we're happy to send our products to customers in most countries around 
+ the world."}]}
+```
+
 Continue in a conversation:
 
 ```
 curl -X PUT http://127.0.0.1:8000/conversations/<id: str> \
      -H "Content-Type: application/json" \
      -d '{"text": "Can I buy your products in the Czech Republic?"}'
+```
+
+response:
+
+```
+{"id":<id: str>,"questions":[{"text":"Do you ship your products worldwide?",
+ "answer":"Yes, we do ship our products worldwide! At Home Accessories LLC, 
+ we strive to make our high-quality home accessories available 
+ to customers globally. We have a robust shipping infrastructure in place, 
+ and we're happy to send our products to customers in most countries around 
+ the world."}, {"text":"Can I buy your products in the Czech Republic?",
+ "answer":"Based on our company policy and analysis, we have not identified 
+ any restrictions or concerns that would prevent us from conducting sales 
+ in the Czech Republic. Our product lines meet the regulatory requirements 
+ in this region, and we are committed to serving customers in 
+ the Czech Republic. You can certainly purchase our products in 
+ the Czech Republic through our online platform or authorized retailers. 
+ If you have any further questions or require assistance with 
+ a specific product, please feel free to ask!"}]}
+```
+
+Retrieve messages from a given conversation:
+
+```
+curl -X GET http://127.0.0.1:8000/conversations/<id: str>
+```
+
+response:
+
+```
+{"id":<id: str>,"questions":[{"text":"Do you ship your products worldwide?",
+ "answer":"Yes, we do ship our products worldwide! At Home Accessories LLC, 
+ we strive to make our high-quality home accessories available 
+ to customers globally. We have a robust shipping infrastructure in place, 
+ and we're happy to send our products to customers in most countries around 
+ the world."}, {"text":"Can I buy your products in the Czech Republic?",
+ "answer":"Based on our company policy and analysis, we have not identified 
+ any restrictions or concerns that would prevent us from conducting sales 
+ in the Czech Republic. Our product lines meet the regulatory requirements 
+ in this region, and we are committed to serving customers in 
+ the Czech Republic. You can certainly purchase our products in 
+ the Czech Republic through our online platform or authorized retailers. 
+ If you have any further questions or require assistance with 
+ a specific product, please feel free to ask!"}]}
 ```
 
 ## Project structure

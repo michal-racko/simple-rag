@@ -7,3 +7,5 @@ analysis/data/chroma-db
 .ipynb_checkpoints
 
 dev.db
+
+env.sh
