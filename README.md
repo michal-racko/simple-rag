@@ -11,9 +11,35 @@ First, make sure to install dependencies:
 pip install -r requirements.txt
 ```
 
+This system connects to an ollama RESP API instance. Please refer
+to https://github.com/ollama/ollama for details on how to install ollama
+locally, pull and run its LLM models.
+
+### environment
+
+Following env variables can be set:
+
+- `SIMPLE_RAG_TEST` - run in the debug mode, using the development server and an
+  SQLite file / default: `false`
+- `SIMPLE_RAG_SQLITE_DB_PATH` - path to the SQLite file if in development mode
+  / default: `<project-root>/dev.db`
+- `SIMPLE_RAG_MAX_QUESTIONS` - defines the limit on questions per conversation /
+  default: 5
+- `SIMPLE_RAG_EMBEDDING_URL` - ollama embedding API URL /
+  default: `http://localhost:11434/api/embeddings`
+- `SIMPLE_RAG_EMBEDDING_MODEL` - embedding model name /
+  default: `mxbai-embed-large`
+- `SIMPLE_RAG_LLM_URL` - ollama chat URL /
+  default: `http://localhost:11434/api/chat`
+- `SIMPLE_RAG_LLM_MODEL` - chat LLM model name / default: `llama3:8b`
+- `SIMPLE_RAG_RUN_ID` - which chromadb to select, corresponds to `run_id` in
+  MLFLow / default: `d46674dd-c854-4335-b986-1de579166728`
+- `SIMPLE_RAG_SIMILARITY_THRESHOLD` - similarity threshold for ChromaDB search /
+  default: 335
+
 ### development server
 
-Run the following commands to start a development server using an SQLite 
+Run the following commands to start a development server using an SQLite
 database file.
 
 ```
@@ -70,10 +96,6 @@ chmod +x start_mlflow.sh
 ```
 
 Otherwise, please connect to an MLFlow server shared with other analysts.
-
-These experiment had been done using locally-hosted ollama models. Please refer
-to https://github.com/ollama/ollama for details on how to install ollama, pull
-and its LLM models.
 
 #### Experiments
 
